@@ -6,13 +6,11 @@ public class Car {
 
     private final int NAME_LIMIT_NUM = 5;
 
-    private final String carName;
+    public String carName;
 
-    private int line = 0;
+    public int line = 1;
 
-    private final int GO_NUM = 4;
-
-    private final Random random = new Random();
+    private final int FORWARD_NUM = 4;
 
     public Car(String carNm) {
         this.carName = limitCheck(carNm);
@@ -25,23 +23,11 @@ public class Car {
         return carNm;
     }
 
-    public void goCar() {
-        if (stopPlayCheck(getRandomNum()) == CarStatus.PLAY) {
-            this.line += 1;
-        }
-    }
-
-    public CarStatus stopPlayCheck(int randomNum) {
-
-        if (randomNum < GO_NUM) {
-            return CarStatus.STOP;
+    public int play(int randomNum) {
+        if (randomNum < FORWARD_NUM) {
+            return line;
         }
 
-        return CarStatus.PLAY;
+        return ++line;
     }
-
-    public int getRandomNum() {
-        return random.nextInt(10);
-    }
-
 }
