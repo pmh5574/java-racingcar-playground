@@ -2,7 +2,6 @@ package racingGame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Cars {
@@ -46,7 +45,6 @@ public class Cars {
 
         setRandomNumListNull();
 
-        // 랜덤일때는 각 값들 쭉쭉 다르게 세팅하기 똑같은 List 5 5 3으로 반복 안하게
         IntStream.range(0, repeatNum)
                 .forEach(i -> {
                     setCarsLine(randomNumList);
@@ -87,26 +85,15 @@ public class Cars {
         return topNum;
     }
 
-    public <T> T getListLastData(List<T> list) {
-        if (list != null && !list.isEmpty()) {
-            return list.get(list.size() - 1);
-        }
-        return null;
-    }
-
     private void setCarsLine(RandomNumberList list) {
-        if (this.mode == "random") {
+        if (this.mode.equals("random")) {
             list = new RandomNumberList(this.carSize);
         }
 
         RandomNumberList finalList = list;
 
         IntStream.range(0, this.carSize)
-                .forEach(i ->
-                        this.cars
-                        .get(i)
-                        .play(finalList.getRandomNumbers().get(i))
-                );
+                .forEach(i -> this.cars.get(i).play(finalList.getRandomNumbers().get(i)));
     }
 
     private void printPlay() {
