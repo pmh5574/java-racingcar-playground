@@ -31,13 +31,4 @@ public class Car {
 
         return ++line;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Car)) return false;
-        Car car = (Car) o;
-        return line == car.line;
-    }
-
 }
