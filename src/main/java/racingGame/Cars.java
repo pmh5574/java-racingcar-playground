@@ -2,7 +2,6 @@ package racingGame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -10,10 +9,23 @@ public class Cars {
 
     private List<Car> cars;
 
-    private Random random = new Random();
+    private int carSize;
+
+    private String mode;
+
+    private RandomNumberList randomNumList;
 
     public Cars(String carList) {
         this.cars = makeCar(carList);
+        this.carSize = this.cars.size();
+        this.mode = "random";
+    }
+
+    public Cars(String carList, List<Integer> randomNumList) {
+        this.cars = makeCar(carList);
+        this.randomNumList = new RandomNumberList(randomNumList);
+        this.carSize = this.cars.size();
+        this.mode = "test";
     }
 
     private List<Car> makeCar(String carList) {
@@ -30,30 +42,11 @@ public class Cars {
         return carsList;
     }
 
-//    public String lineCheck(List<Integer> list) {
-//
-//        List<Integer> carsLine = getCarsLine(list);
-//
-//        int topNum = 0;
-//        StringBuilder carsListNm = new StringBuilder();
-//
-//        for(int i = 0; i < carsLine.size(); i++) {
-//            if (topNum < carsLine.get(i)) {
-//                topNum = carsLine.get(i);
-//                carsListNm = new StringBuilder(cars.get(i).carName);
-//            } else if (topNum == carsLine.get(i)) {
-//                carsListNm.append(",").append(cars.get(i).carName);
-//            }
-//
-//        }
-//
-//        return carsListNm.toString();
-//    }
-
     public String play(int repeatNum) {
 
-        List<Integer> randomNumList = randomNumList();
+        setRandomNumListNull();
 
+        // 랜덤일때는 각 값들 쭉쭉 다르게 세팅하기 똑같은 List 5 5 3으로 반복 안하게
         IntStream.range(0, repeatNum)
                 .forEach(i -> {
                     setCarsLine(randomNumList);
@@ -62,31 +55,36 @@ public class Cars {
 
         int topNum = 0;
 
+        for (int i = 0; i < this.carSize; i++) {
+            topNum = getTopNum(topNum, i);
+        }
 
-//        this.cars.stream()
-//                .map(car -> {
-//                    car.line
-//                })
-//                .reduce(0, (a, b) -> b);
+        int finalTopNum = topNum;
 
         StringBuilder carsListNm = new StringBuilder();
 
-        for (int i = 0; i < this.cars.size(); i++) {
-            this.cars.get(i).equals(topNum);
+        this.cars
+                .forEach(car -> {
+                    if (car.line == finalTopNum) {
+                        carsListNm.append(",").append(car.carName);
+                    }
+                });
 
-            if (topNum < this.cars.get(i).line) {
-                topNum = this.cars.get(i).line;
-                carsListNm = new StringBuilder(cars.get(i).carName);
-            } else if (topNum == this.cars.get(i).line) {
-                carsListNm.append(",").append(cars.get(i).carName);
-            }
+        return carsListNm.deleteCharAt(0)
+                .toString();
+    }
 
+    private void setRandomNumListNull() {
+        if (this.randomNumList == null) {
+            this.randomNumList = new RandomNumberList(this.carSize);
         }
-//        this.cars.stream()
-//                .filter(car -> car.line > )
+    }
 
-//        return getListLastData(carNameList);
-        return "";
+    private int getTopNum(int topNum, int i) {
+        if (topNum < this.cars.get(i).line) {
+            topNum = this.cars.get(i).line;
+        }
+        return topNum;
     }
 
     public <T> T getListLastData(List<T> list) {
@@ -96,11 +94,18 @@ public class Cars {
         return null;
     }
 
-    private void setCarsLine(List<Integer> list) {
-        IntStream.range(0, this.cars.size())
-                .forEach(i -> this.cars
+    private void setCarsLine(RandomNumberList list) {
+        if (this.mode == "random") {
+            list = new RandomNumberList(this.carSize);
+        }
+
+        RandomNumberList finalList = list;
+
+        IntStream.range(0, this.carSize)
+                .forEach(i ->
+                        this.cars
                         .get(i)
-                        .play(list.get(i))
+                        .play(finalList.getRandomNumbers().get(i))
                 );
     }
 
@@ -109,11 +114,4 @@ public class Cars {
                 .forEach(carData -> System.out.println(carData.carName + " : " + carData.line));
     }
 
-    private List<Integer> randomNumList() {
-        int min = 0;
-        int max = 9;
-        return IntStream.range(0, this.cars.size())
-                .mapToObj(i -> random.nextInt(max - min + 1) + min)
-                .collect(Collectors.toList());
-    }
 }

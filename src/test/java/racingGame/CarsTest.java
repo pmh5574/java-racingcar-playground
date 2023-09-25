@@ -14,18 +14,13 @@ public class CarsTest {
 
     @BeforeEach
     void 자동차_여러개_생성() {
-        cars = new Cars("pobi,crong,honux");
+        cars = new Cars("pobi,crong,honux", Arrays.asList(5, 5, 3));
     }
 
     @Test
     void 자동차_여러개중_5글자넘는경우() {
         assertThatThrownBy(() -> new Cars("pobi,crongb,honux"))
                 .isInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    void 자동차_객체중_라인이_가장_큰값_찾기() {
-//        assertThat(cars.lineCheck(Arrays.asList(4,4,3))).isEqualTo("pobi,crong");
     }
 
     @Test
